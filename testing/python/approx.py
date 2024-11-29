@@ -371,6 +371,11 @@ class TestApprox:
         np_array = np.array(value)
         assert repr(approx(np_array)) == expected_repr_string
 
+    def test_approx_bool(self):
+        with pytest.raises(AssertionError) as err:
+            assert approx(True) == False
+        assert err.match(r"assert True == False\s+\+\s+where True = approx\(True\)")
+
     def test_bool(self):
         with pytest.raises(AssertionError) as err:
             assert approx(1)

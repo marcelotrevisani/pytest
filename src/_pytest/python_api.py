@@ -257,6 +257,8 @@ class ApproxMapping(ApproxBase):
         for (approx_key, approx_value), other_value in zip(
             approx_side_as_map.items(), other_side.values()
         ):
+            if isinstance(approx_value, bool):
+                pass
             if approx_value != other_value:
                 if approx_value.expected is not None and other_value is not None:
                     max_abs_diff = max(
@@ -518,7 +520,7 @@ class ApproxDecimal(ApproxScalar):
     DEFAULT_RELATIVE_TOLERANCE = Decimal("1e-6")
 
 
-def approx(expected, rel=None, abs=None, nan_ok: bool = False) -> ApproxBase:
+def approx(expected, rel=None, abs=None, nan_ok: bool = False) -> ApproxBase | bool:
     """Assert that two numbers (or two ordered sequences of numbers) are equal to each other
     within some tolerance.
 
@@ -717,6 +719,8 @@ def approx(expected, rel=None, abs=None, nan_ok: bool = False) -> ApproxBase:
 
     __tracebackhide__ = True
 
+    if isinstance(expected, bool):
+        return expected
     if isinstance(expected, Decimal):
         cls: type[ApproxBase] = ApproxDecimal
     elif isinstance(expected, Mapping):
